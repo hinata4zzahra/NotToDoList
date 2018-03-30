@@ -1,17 +1,19 @@
 import React ,{Component} from 'react';
 import {
-  Container,Content,List,ListItem,
+  Container,Content,List,ListItem, Header
   Text, Fab, Icon, Form, Item, Input
 } from 'native-base';
 import {
-  Modal,TouchableHighlight, View,Button, StyleSheet
+  Modal,TouchableHighlight, View,
+  Button, StyleSheet, ListView
 } from 'react-native';
 import axios from 'axios';
+import {NavigationActions} from 'react-navigation';
 
 export default class Main extends Component{
   constructor(){
     super();
-    console.log('Constructor')
+
     //initial state
     this.state={
       modalVisible:false,
@@ -25,14 +27,14 @@ export default class Main extends Component{
     axios
     .get('http://rest.learncode.academy/api/learncode/fruits')
     .then((result) =>{
-      console.log(result.data)
+
 
       this.setState({list: result.data})
     })
   }
 
   componentWillMount(){
-    console.log('component will mount');
+    
     //before rendering data to screen
     //assign array of obj to list State
     this.allFriends()
@@ -70,10 +72,15 @@ export default class Main extends Component{
 
             {this.state.list.map((item, index)=>{
               return(
-                <ListItem key={index}>
-                  <Text>{item.name}</Text>
-                  <Text>{item.isManis? "Manis" : "kecut"}</Text>
-                </ListItem>
+
+                  <ListItem
+                   key={index}
+                   onPress={()=>this.props.navigation.navigate('DetailItem',{item: item})}
+                  >
+                    <Text>{item.name}</Text>
+                    <Text>{item.isManis? "Manis" : "kecut"}</Text>
+                  </ListItem>
+
               )
             })}
 
@@ -105,7 +112,7 @@ export default class Main extends Component{
             <Item>
               <Input placeholder="name" onChangeText={this.handleChangeText} />
             </Item>
-            <View style= {styles.containerButton}>
+            <View >
               <Button title='submit' onPress={this.handleSubmit} />
               <Button title='cancel' onPress={this.handleModalVisible} />
 
@@ -118,10 +125,3 @@ export default class Main extends Component{
     )
   }
 }
-
-const styles= StyleSheet.create({
-  containerButton: {
-    flexDirection: 'row',
-    justifyContent: 'space-around'
-  },
-})
